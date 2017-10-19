@@ -1,8 +1,4 @@
-# Requires "Blender" to run. Open file inside blender,
-# set output_path, and run. Output format is a text file
-# with each block of rows/columns representing a 2D slice
-# of the binary specimen mask. Each block is separated
-# by an empty line. Currently working in Blender 2.78a
+
 
 import mathutils, numpy, bpy
 import random as rnd
@@ -11,6 +7,31 @@ PI = numpy.pi
 
 
 def pointInsideMesh(point, ob):
+    """
+    Determines if a given point is inside the mesh
+    of an object using a ray casting algorithm.
+    Parameters
+    ----------
+    point : Mathutils.Vector()
+        Three dimensional vector corresponding to the location in
+        space being tested.
+    ob : bpy.types.Object
+        Object whose mesh defines the boundaries of the region.
+        Mesh must have a well defined interior/exterior for
+        predictable results. Typically, being closed would be
+        sufficient.
+
+    Returns
+    -------
+    bool
+        True means that the point was inside ob,
+        and False means that it was not.
+    """
+
+    # Additional axes can be added to this list if exterior points are
+    # erroneously counted as being interior. This can occur due to
+    # numerical errors under some (rare) circumstances.
+
     axes = [mathutils.Vector((1, 0, 0))]
     outside1 = False
     for axis in axes:
@@ -23,7 +44,8 @@ def pointInsideMesh(point, ob):
         count = 0
         while True:
             result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1: break
+            if index == -1:
+                break
             count += 1
 
             orig = location + axis * 0.00001
@@ -32,6 +54,7 @@ def pointInsideMesh(point, ob):
             outside1 = True
             break
 
+    # todo: The following should be removed
     axes = [mathutils.Vector((0, 1, 0))]
     outside2 = False
     for axis in axes:
@@ -44,7 +67,8 @@ def pointInsideMesh(point, ob):
         count = 0
         while True:
             result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1: break
+            if index == -1:
+                break
             count += 1
 
             orig = location + axis * 0.00001
@@ -70,21 +94,38 @@ def get_override(area_type, region_type):
 
 
 def main():
-    M = 64
-    num_specimens = 10000
+    """
+    Procedurally generates specimen simulations.
+    Requires "Blender" to run. Open file inside Blender,
+    set output_path, and run. Output format is a text file
+    with each block of rows/columns representing a 2D slice
+    of the binary specimen mask. Each block is separated
+    by an empty line. Currently working in Blender 2.78a
+    """
+    M = 64  # Number of pixels along each dimension of the output file.
+    num_specimens = 10000  # Number of specimens to simulate.
+
+    # Index of first output file. Only needs to be changed if
+    # the process was interrupted or if additional specimens
+    # are required.
     start_number = 0
 
+    # Path to place the output files in. Must exist.
     output_path = '/output/path/'
 
+    # Generate the specimens.
     for i in range(num_specimens):
+        # File output path. Each file contains the specimen number to
+        # differentiate it from the other specimens.
         fileOut = output_path + 'particle(' + str(i + start_number) + ')'
 
+        # Generate pseudo-random numbers for size, position, and rotation
+        # of the specimen
         radius = rnd.uniform(0.12, 0.14)
-
         offset = 0.05
         location = (
             rnd.uniform(-offset, offset),
-            rnd.uniform(-0.05, 0.05),
+            rnd.uniform(-offset, offset),
             rnd.uniform(-offset, offset)
         )
         rotation = (
@@ -93,14 +134,16 @@ def main():
             rnd.uniform(0, 2 * PI)
         )
 
+        # Spawn cube.
         bpy.ops.mesh.primitive_cube_add(
             location=location,
             rotation=rotation,
             radius=radius
         )
 
+        # Define and apply modifiers.
         ob_base = bpy.context.active_object
-        fracture = False  # bool(rnd.randint(0, 1))
+        fracture = False
         if fracture:
             bpy.ops.object.add_fracture_cell_objects(
                 use_layer_next=False,
@@ -156,7 +199,8 @@ def main():
         bpy.ops.object.modifier_add(type='SUBSURF')
         ob.modifiers['Subsurf'].levels = 3
 
-        construct = True
+        # Iterate over voxels to determine if each is inside the mesh, and write
+        # result to file.
         if construct:
             fo = open(fileOut, "w")
             for n in range(0, M):
@@ -172,10 +216,12 @@ def main():
                     fo.write("\n")
                 fo.write("\n")
             fo.close()
+
+            # Remove object after file is written.
             bpy.ops.object.delete()
 
 
-# bpy.ops.object.delete()
+
 main()
 
 
