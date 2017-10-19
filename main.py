@@ -32,8 +32,8 @@ def pointInsideMesh(point, ob):
     # erroneously counted as being interior. This can occur due to
     # numerical errors under some (rare) circumstances.
 
-    axes = [mathutils.Vector((1, 0, 0))]
-    outside1 = False
+    axes = [mathutils.Vector((1, 0, 0)), mathutils.Vector((0, 1, 0))]
+    outside = False
     for axis in axes:
 
         mat1 = mathutils.Matrix(ob.matrix_world)
@@ -51,33 +51,9 @@ def pointInsideMesh(point, ob):
             orig = location + axis * 0.00001
 
         if (count % 2 == 0):
-            outside1 = True
+            outside = True
             break
 
-    # todo: The following should be removed
-    axes = [mathutils.Vector((0, 1, 0))]
-    outside2 = False
-    for axis in axes:
-
-        mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
-        orig = mat1 * point
-
-        count = 0
-        while True:
-            result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1:
-                break
-            count += 1
-
-            orig = location + axis * 0.00001
-
-        if (count % 2 == 0):
-            outside2 = True
-            break
-
-    outside = outside1 or outside2
     return not outside
 
 
@@ -201,24 +177,23 @@ def main():
 
         # Iterate over voxels to determine if each is inside the mesh, and write
         # result to file.
-        if construct:
-            fo = open(fileOut, "w")
-            for n in range(0, M):
-                for m in range(0, M):
-                    for l in range(0, M):
-                        if pointInsideMesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
-                                           ob):
-                            fo.write("1")
-                        else:
-                            fo.write("0")
-                        if l < M - 1:
-                            fo.write(" ")
-                    fo.write("\n")
+        fo = open(fileOut, "w")
+        for n in range(0, M):
+            for m in range(0, M):
+                for l in range(0, M):
+                    if pointInsideMesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
+                                       ob):
+                        fo.write("1")
+                    else:
+                        fo.write("0")
+                    if l < M - 1:
+                        fo.write(" ")
                 fo.write("\n")
-            fo.close()
+            fo.write("\n")
+        fo.close()
 
-            # Remove object after file is written.
-            bpy.ops.object.delete()
+        # Remove object after file is written.
+        bpy.ops.object.delete()
 
 
 
