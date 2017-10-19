@@ -79,12 +79,8 @@ def main():
     for i in range(num_specimens):
         fileOut = output_path + 'particle(' + str(i + start_number) + ')'
 
-        scale = (
-            rnd.uniform(0.12, 0.14),
-            rnd.uniform(0.12, 0.14),
-            rnd.uniform(0.12, 0.14)
-        )
         radius = rnd.uniform(0.12, 0.14)
+
         offset = 0.05
         location = (
             rnd.uniform(-offset, offset),
