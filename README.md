@@ -22,3 +22,6 @@ The vector field is produced based on what is selected, and the mask is produced
 * Select all vector objects. 
 * Ensure that the name of the specimen object is consistent with that in the script. 
 * Run.
+
+![example](./example/example.png)
+![retrieved magnetic phase](./example/retrieved_magnetic_phase.tif)
