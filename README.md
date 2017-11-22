@@ -24,4 +24,3 @@ The vector field is produced based on what is selected, and the mask is produced
 * Run.
 
 ![example](./example/example.png)
-![retrieved magnetic phase](./example/retrieved_magnetic_phase.tif)
