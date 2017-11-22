@@ -23,4 +23,28 @@ The vector field is produced based on what is selected, and the mask is produced
 * Ensure that the name of the specimen object is consistent with that in the script. 
 * Run.
 
+## Example
+
+### Included 3D model
+
 ![example](./example/example.png)
+
+This is a render of the model, showing the carbon support film, a square particles, and arrows describing the local magnetisation direction. A nearest neighbour method is used to determine the magnetisation at each voxel in the specimen. Note that the carbon film is not used in the following example.
+
+### Total projected phase
+![projected phase](./example/total_projected_phase.png)
+
+This is the projected phase of the specimen, using a mean inner potential and magnetisation to simulate magnetite.
+
+### Under-, in-, and over-focus micrographs
+![under](./example/over.png)
+![in](./example/in.png)
+![over](./example/over.png)
+
+In- and out-of-focus micrographs simulated by transferring the wavefield described by the exit phase above. An imaginary component is used for attenuation. 
+
+### Magnetic component of the retrieved phase
+
+![retrieved magnetic phase](./example/retrieved_magnetic_phase.png)
+
+The magnetic component of the phase, retrieved from the above three micrographs, and a corresponding set with the specimen flipped.
