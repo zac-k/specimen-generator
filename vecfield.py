@@ -48,11 +48,11 @@ def pointInsideMesh(point, ob):
     return not outside
 
 
-def objectMask(ob):
+def objectMask(ob, path):
     # ob = bpy.context.active_object
 
     M = 64
-    fileOut = 'D:\images\\test.txt'
+    fileOut = path + 'particle.txt'
 
     fo = open(fileOut, "w")
     for n in range(0, M):
@@ -70,12 +70,13 @@ def objectMask(ob):
     return
 
 
-mask = bpy.data.objects['Cube.002']
-objectMask(mask)
+
 
 M = 64
 path = '/output/path/'
 filename = 'moment'
+mask = bpy.data.objects['Cube.002']
+objectMask(mask, path)
 fox = open(path + filename + "_x.txt", "w")
 foy = open(path + filename + "_y.txt", "w")
 foz = open(path + filename + "_z.txt", "w")
