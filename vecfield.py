@@ -74,7 +74,7 @@ mask = bpy.data.objects['Cube.002']
 objectMask(mask)
 
 M = 64
-path = 'D:\images\\'
+path = '/output/path/'
 filename = 'moment'
 fox = open(path + filename + "_x.txt", "w")
 foy = open(path + filename + "_y.txt", "w")
@@ -95,26 +95,9 @@ for n in range(0, M):
                     veclist[0].location[2] - voxel[2]) * (veclist[0].location[2] - voxel[2]))
 
                 for i in range(1, len(veclist)):
-                    distanceSq = (veclist[i].location[0] - voxel[0]) * (veclist[i].location[0] - voxel[0]) + (veclist[
-                                                                                                                  i].location[
-                                                                                                                  1] -
-                                                                                                              voxel[
-                                                                                                                  1]) * (
-                                                                                                             veclist[
-                                                                                                                 i].location[
-                                                                                                                 1] -
-                                                                                                             voxel[
-                                                                                                                 1]) + (
-                                                                                                                       veclist[
-                                                                                                                           i].location[
-                                                                                                                           2] -
-                                                                                                                       voxel[
-                                                                                                                           2]) * (
-                                                                                                                       veclist[
-                                                                                                                           i].location[
-                                                                                                                           2] -
-                                                                                                                       voxel[
-                                                                                                                           2])
+                    distanceSq = (veclist[i].location[0] - voxel[0]) * (veclist[i].location[0] - voxel[0]) \
+                               + (veclist[i].location[1] - voxel[1]) * (veclist[i].location[1] - voxel[1]) \
+                               + (veclist[i].location[2] - voxel[2]) * (veclist[i].location[2] - voxel[2])
                     distance = numpy.sqrt(distanceSq)
                     if distance < distanceToPrevious:
                         closestVec = veclist[i]
