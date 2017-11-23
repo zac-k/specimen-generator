@@ -65,3 +65,7 @@ Generate a binary specimen mask for use in simulating refracting or uniformly ma
 * Run the script.
 
 Note that the created array will be in the region `(-5,5)` in each direction. You can use the carbon film object in `example.blend` as a guide for where to place your specimen object.
+
+### Example
+
+![octohedron micrograph](octohedron.png)
