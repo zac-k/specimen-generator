@@ -1,6 +1,5 @@
 import mathutils, numpy, bpy
 
-
 def pointInsideMesh(point, ob):
     """
     Determines if a given point is inside the mesh
@@ -31,17 +30,14 @@ def pointInsideMesh(point, ob):
     for axis in axes:
 
         mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
         orig = mat1 * point
-
         count = 0
+
         while True:
             result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
             if index == -1:
                 break
             count += 1
-
             orig = location + axis * 0.00001
 
         if (count % 2 == 0):
@@ -50,11 +46,16 @@ def pointInsideMesh(point, ob):
 
     return not outside
 
-
+# Use the active object
 ob = bpy.context.active_object
+
+# Set the resolution
 M = 512
+
+# Set the path of the file (including the filename)
 fileOut = 'path\\to\\file'
 
+# Create/open the file and write binary mask by iterating over voxels.
 fo = open(fileOut, "w")
 for n in range(0, M):
     for m in range(0, M):
