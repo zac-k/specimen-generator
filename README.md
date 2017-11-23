@@ -25,6 +25,8 @@ The vector field is produced based on what is selected, and the mask is produced
 
 ## Example
 
+I've included an example of some simulations using `vecfield.py` and the included `example.blend` file. Note that my repository [phaseimaging](https://github.com/zac-k/phaseimaging) provides a lot of the functionality to do these simulations, but the non-uniform magnetisation used here is not implemented in that library as of writing this README. 
+
 ### Included 3D model
 
 ![example](./example/example.png)
