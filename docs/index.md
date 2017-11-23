@@ -32,7 +32,7 @@ The vector field is produced based on what is selected, and the mask is produced
 
 ![example](example.png)
 
-This is a render of the model, showing the carbon support film, a square particles, and arrows describing the local magnetisation direction. A nearest neighbour method is used to determine the magnetisation at each voxel in the specimen. Note that the carbon film is not used in the following example.
+This is a render of the model, showing the carbon support film, a square particle, and arrows describing the local magnetisation direction. A nearest neighbour method is used to determine the magnetisation at each voxel in the specimen. Note that the carbon film is not used in the following example.
 
 ### Total projected phase
 ![projected phase](total_projected_phase.png)
