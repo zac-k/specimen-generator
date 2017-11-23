@@ -37,7 +37,7 @@ This is a render of the model, showing the carbon support film, a square particl
 This is the projected phase of the specimen, using a mean inner potential and magnetisation to simulate magnetite.
 
 ### Under-, in-, and over-focus micrographs
-![under](./example/over.png)
+![under](./example/under.png)
 ![in](./example/in.png)
 ![over](./example/over.png)
 
