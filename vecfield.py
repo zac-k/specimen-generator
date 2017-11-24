@@ -2,49 +2,49 @@ import mathutils, numpy, bpy
 
 
 def pointInsideMesh(point, ob):
-    axes = [mathutils.Vector((1, 0, 0))]
-    outside1 = False
+    """
+    Determines if a given point is inside the mesh
+    of an object using a ray casting algorithm.
+    Parameters
+    ----------
+    point : Mathutils.Vector()
+        Three dimensional vector corresponding to the location in
+        space being tested.
+    ob : bpy.types.Object
+        Object whose mesh defines the boundaries of the region.
+        Mesh must have a well defined interior/exterior for
+        predictable results. Typically, being closed would be
+        sufficient.
+    Returns
+    -------
+    bool
+        True means that the point was inside ob,
+        and False means that it was not.
+    """
+
+    # Additional axes can be added to this list if exterior points are
+    # erroneously counted as being interior. This can occur due to
+    # numerical errors under some (rare) circumstances.
+
+    axes = [mathutils.Vector((1, 0, 0)), mathutils.Vector((0, 1, 0))]
+    outside = False
     for axis in axes:
 
         mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
         orig = mat1 * point
-
         count = 0
+
         while True:
             result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1: break
+            if index == -1:
+                break
             count += 1
-
             orig = location + axis * 0.00001
 
         if (count % 2 == 0):
-            outside1 = True
+            outside = True
             break
 
-    axes = [mathutils.Vector((0, 1, 0))]
-    outside2 = False
-    for axis in axes:
-
-        mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
-        orig = mat1 * point
-
-        count = 0
-        while True:
-            result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1: break
-            count += 1
-
-            orig = location + axis * 0.00001
-
-        if (count % 2 == 0):
-            outside2 = True
-            break
-
-    outside = outside1 or outside2
     return not outside
 
 
