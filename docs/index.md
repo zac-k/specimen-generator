@@ -68,4 +68,47 @@ Note that the created array will be in the region `(-5,5)` in each direction. Yo
 
 ### Example
 
+This example generates a micrograph of a magnetite particle on a carbon support film. Such an image can be simulated by generating a different specimen file for each of the particle and film. The specimen and film file used here are included in the [example](https://github.com/zac-k/specimen-generator/tree/master/example) folder. You must install my [phaseimaging](https://github.com/zac-k/phaseimaging) repository to use this script.
+
+#### Script
+
+```python
+from phaseimaging import *
+
+# Set the width
+domain = (150e-9, 150e-9, 150e-9)
+
+# Import the specimens
+film = Specimen(width=domain,
+                mean_inner_potential=-9.09 + 0.5j,
+                specimen_file='film.txt',
+                name='Carbon Film')
+particle = Specimen(width=domain,
+                    mean_inner_potential=-17 + 1j,
+                    specimen_file='particle.txt',
+                    name='Particle')
+
+# Get resolution from particle
+res = particle.resolution
+
+# Rotate so that the carbon film is perpendicular to the beam
+film.rotate(angle=90, axis=1)
+particle.rotate(angle=90, axis=1)
+
+
+# Set the beam and project the phase through the film and particle
+phase = Phase(res[0:2], domain[0:2], name='Exit Phase')
+beam = Beam(wavelength=1.97e-12)
+phase.project_electrostatic(film, beam)
+phase.project_electrostatic(particle, beam)
+
+# Transfer to an underfocus image plane and plot the image
+image = Intensity(res[0:2], domain[0:2], defocus=-1e-6)
+image.transfer(phase, beam)
+image.plot(limits=(0, 2))
+
+```
+
+#### Output
+
 ![octohedron micrograph](octohedron.png)
