@@ -68,7 +68,7 @@ Note that the created array will be in the region `(-5,5)` in each direction. Yo
 
 ### Example
 
-This example generates a micrograph of a magnetite particle on a carbon support film. Such an image can be simulated by generating a different specimen file for each of the particle and film. The specimen and film file used here are included in the [example](https://github.com/zac-k/specimen-generator/tree/master/example) folder. You must install my [phaseimaging](https://github.com/zac-k/phaseimaging) repository to use this script.
+This example generates a micrograph of a magnetite particle on a carbon support film. Such an image can be simulated by generating a different specimen file for each of the particle and film. The carbon film object is included in `scalar.py`. For the particle, you can create any primitive (for example, in Blender hit the spacebar and type "add cube"), import models downloaded from a resource such as [cgtrader](https://www.cgtrader.com/), or create your own if you have the 3D modelling skills. You must install my [phaseimaging](https://github.com/zac-k/phaseimaging) repository to use this script.
 
 #### Script
 
