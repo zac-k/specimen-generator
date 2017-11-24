@@ -1,7 +1,7 @@
 import mathutils, numpy, bpy
 
 
-def pointInsideMesh(point, ob):
+def point_inside_mesh(point, ob):
     """
     Determines if a given point is inside the mesh
     of an object using a ray casting algorithm.
@@ -58,7 +58,7 @@ def objectMask(ob, path):
     for n in range(0, M):
         for m in range(0, M):
             for l in range(0, M):
-                if pointInsideMesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
+                if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
                     fo.write("1")
                 else:
                     fo.write("0")
@@ -88,7 +88,7 @@ for n in range(0, M):
         for l in range(0, M):
 
             voxel = mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5))
-            if pointInsideMesh(voxel, mask):
+            if point_inside_mesh(voxel, mask):
                 closestVec = veclist[0]
                 distanceToPrevious = numpy.sqrt(
                     (veclist[0].location[0] - voxel[0]) * (veclist[0].location[0] - voxel[0]) + (

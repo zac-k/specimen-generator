@@ -1,6 +1,6 @@
 import mathutils, numpy, bpy
 
-def pointInsideMesh(point, ob):
+def point_inside_mesh(point, ob):
     """
     Determines if a given point is inside the mesh
     of an object using a ray casting algorithm.
@@ -60,7 +60,7 @@ fo = open(fileOut, "w")
 for n in range(0, M):
     for m in range(0, M):
         for l in range(0, M):
-            if pointInsideMesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
+            if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
                 fo.write("1")
             else:
                 fo.write("0")

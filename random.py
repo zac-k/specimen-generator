@@ -6,7 +6,7 @@ import random as rnd
 PI = numpy.pi
 
 
-def pointInsideMesh(point, ob):
+def point_inside_mesh(point, ob):
     """
     Determines if a given point is inside the mesh
     of an object using a ray casting algorithm.
@@ -181,7 +181,7 @@ def main():
         for n in range(0, M):
             for m in range(0, M):
                 for l in range(0, M):
-                    if pointInsideMesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
+                    if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
                                        ob):
                         fo.write("1")
                     else:
