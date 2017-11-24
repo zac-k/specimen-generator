@@ -27,7 +27,7 @@ beam = Beam(wavelength=1.97e-12)
 phase.project_electrostatic(film, beam)
 phase.project_electrostatic(particle, beam)
 
-# Transfer to an underfocus image plane and plot the image
+# Transfer to an underfocus image plane, add noise, and plot the image
 image = Intensity(res[0:2], domain[0:2], defocus=-1e-6)
 image.transfer(phase, beam)
 image.add_noise(0.1)
