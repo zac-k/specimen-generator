@@ -79,7 +79,8 @@ def main():
     by an empty line. Currently working in Blender 2.78a
     """
     M = 64  # Number of pixels along each dimension of the output file.
-    num_specimens = 10000  # Number of specimens to simulate.
+    num_specimens = 10  # Number of specimens to simulate.
+    numpy_output = True
 
     # Index of first output file. Only needs to be changed if
     # the process was interrupted or if additional specimens
@@ -87,7 +88,7 @@ def main():
     start_number = 0
 
     # Path to place the output files in. Must exist.
-    output_path = '/output/path/'
+    output_path = '/output/path/'  # e.g., 'C:\simulations\\'
 
     # Generate the specimens.
     for i in range(num_specimens):
@@ -177,20 +178,30 @@ def main():
 
         # Iterate over voxels to determine if each is inside the mesh, and write
         # result to file.
-        fo = open(fileOut, "w")
-        for n in range(0, M):
-            for m in range(0, M):
-                for l in range(0, M):
-                    if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
-                                       ob):
-                        fo.write("1")
-                    else:
-                        fo.write("0")
-                    if l < M - 1:
-                        fo.write(" ")
+        if numpy_output:
+            mask = numpy.zeros((M, M, M), dtype=bool)
+            for n in range(0, M):
+                for m in range(0, M):
+                    for l in range(0, M):
+                        if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
+                                           ob):
+                            mask[l, m, n] = True
+            numpy.save(fileOut, mask)
+        else:
+            fo = open(fileOut, "w")
+            for n in range(0, M):
+                for m in range(0, M):
+                    for l in range(0, M):
+                        if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
+                                           ob):
+                            fo.write("1")
+                        else:
+                            fo.write("0")
+                        if l < M - 1:
+                            fo.write(" ")
+                    fo.write("\n")
                 fo.write("\n")
-            fo.write("\n")
-        fo.close()
+            fo.close()
 
         # Remove object after file is written.
         bpy.ops.object.delete()
