@@ -50,25 +50,37 @@ def point_inside_mesh(point, ob):
 ob = bpy.context.active_object
 
 # Set the resolution
-M = 512
+M = 64
 
 # Set the path of the file (including the filename)
-fileOut = 'path\\to\\file'
+fileOut = 'path\\to\\file'  # e.g., 'C:\simulations\\particle'
+
+# Set output type
+numpy_output = True
 
 # Create/open the file and write binary mask by iterating over voxels.
-fo = open(fileOut, "w")
-for n in range(0, M):
-    for m in range(0, M):
-        for l in range(0, M):
-            if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
-                fo.write("1")
-            else:
-                fo.write("0")
-            if l < M - 1:
-                fo.write(" ")
+if numpy_output:
+    mask = numpy.zeros((M, M, M), dtype=bool)
+    for n in range(0, M):
+        for m in range(0, M):
+            for l in range(0, M):
+                if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
+                    mask[l, m, n] = True
+    numpy.save(fileOut, mask)
+else:
+    fo = open(fileOut, "w")
+    for n in range(0, M):
+        for m in range(0, M):
+            for l in range(0, M):
+                if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
+                    fo.write("1")
+                else:
+                    fo.write("0")
+                if l < M - 1:
+                    fo.write(" ")
+            fo.write("\n")
         fo.write("\n")
-    fo.write("\n")
-fo.close()
+    fo.close()
 
 
 
