@@ -48,86 +48,137 @@ def point_inside_mesh(point, ob):
     return not outside
 
 
-def objectMask(ob, path):
-    # ob = bpy.context.active_object
+def objectMask(ob, path, numpy_output, M):
+    fileOut = path + 'particle'
 
-    M = 64
-    fileOut = path + 'particle.txt'
+    if numpy_output:
+        mask = numpy.zeros((M, M, M), dtype=bool)
+        for n in range(0, M):
+            for m in range(0, M):
+                for l in range(0, M):
+                    if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
+                                         ob):
+                        mask[l, m, n] = True
+                    else:
+                        mask[l, m, n] = False
+        numpy.save(fileOut, mask)
+        return
+    else:
+        fo = open(fileOut, "w")
 
-    fo = open(fileOut, "w")
-    for n in range(0, M):
-        for m in range(0, M):
-            for l in range(0, M):
-                if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)), ob):
-                    fo.write("1")
-                else:
-                    fo.write("0")
-                if l < M - 1:
-                    fo.write(" ")
+        for n in range(0, M):
+            for m in range(0, M):
+                for l in range(0, M):
+                    if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
+                                         ob):
+                        fo.write("1")
+                    else:
+                        fo.write("0")
+                    if l < M - 1:
+                        fo.write(" ")
+                fo.write("\n")
             fo.write("\n")
-        fo.write("\n")
-    fo.close()
-    return
+        fo.close()
+        return
 
 
-
-
+numpy_output = True
 M = 64
-path = '/output/path/'
+path = 'path\\for\\output\\files\\'  # e.g., 'C:\specimens\\'
 filename = 'moment'
 mask = bpy.data.objects['Cube.002']
-objectMask(mask, path)
-fox = open(path + filename + "_x.txt", "w")
-foy = open(path + filename + "_y.txt", "w")
-foz = open(path + filename + "_z.txt", "w")
+objectMask(mask, path, numpy_output, M=M)
+
+if numpy_output:
+    moment_array = numpy.zeros((3, M, M, M))
+else:
+    fox = open(path + filename + "_x", "w")
+    foy = open(path + filename + "_y", "w")
+    foz = open(path + filename + "_z", "w")
 
 veclist = bpy.context.selected_objects
 
-for n in range(0, M):
-    for m in range(0, M):
-        for l in range(0, M):
+if numpy_output:
+    for n in range(0, M):
+        for m in range(0, M):
+            for l in range(0, M):
 
-            voxel = mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5))
-            if point_inside_mesh(voxel, mask):
-                closestVec = veclist[0]
-                distanceToPrevious = numpy.sqrt(
-                    (veclist[0].location[0] - voxel[0]) * (veclist[0].location[0] - voxel[0]) + (
-                    veclist[0].location[1] - voxel[1]) * (veclist[0].location[1] - voxel[1]) + (
-                    veclist[0].location[2] - voxel[2]) * (veclist[0].location[2] - voxel[2]))
+                voxel = mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5))
+                if point_inside_mesh(voxel, mask):
+                    closestVec = veclist[0]
+                    distanceToPrevious = numpy.sqrt(
+                        (veclist[0].location[0] - voxel[0]) * (veclist[0].location[0] - voxel[0]) + (
+                            veclist[0].location[1] - voxel[1]) * (veclist[0].location[1] - voxel[1]) + (
+                            veclist[0].location[2] - voxel[2]) * (veclist[0].location[2] - voxel[2]))
 
-                for i in range(1, len(veclist)):
-                    distanceSq = (veclist[i].location[0] - voxel[0]) * (veclist[i].location[0] - voxel[0]) \
-                               + (veclist[i].location[1] - voxel[1]) * (veclist[i].location[1] - voxel[1]) \
-                               + (veclist[i].location[2] - voxel[2]) * (veclist[i].location[2] - voxel[2])
-                    distance = numpy.sqrt(distanceSq)
-                    if distance < distanceToPrevious:
-                        closestVec = veclist[i]
-                    distanceToPrevious = distance
+                    for i in range(1, len(veclist)):
+                        distanceSq = (veclist[i].location[0] - voxel[0]) * (veclist[i].location[0] - voxel[0]) \
+                                     + (veclist[i].location[1] - voxel[1]) * (veclist[i].location[1] - voxel[1]) \
+                                     + (veclist[i].location[2] - voxel[2]) * (veclist[i].location[2] - voxel[2])
+                        distance = numpy.sqrt(distanceSq)
+                        if distance < distanceToPrevious:
+                            closestVec = veclist[i]
+                        distanceToPrevious = distance
 
-                rot = closestVec.rotation_euler
-                rotMat = mathutils.Euler(rot).to_matrix()
-                direction = rotMat * mathutils.Vector((0, 0, 1))
+                    rot = closestVec.rotation_euler
+                    rotMat = mathutils.Euler(rot).to_matrix()
+                    direction = rotMat * mathutils.Vector((0, 0, 1))
 
-                fox.write(str(direction[0]))
-                foy.write(str(direction[1]))
-                foz.write(str(direction[2]))
-            else:
-                fox.write("0")
-                foy.write("0")
-                foz.write("0")
-            if l < M - 1:
-                fox.write(" ")
-                foy.write(" ")
-                foz.write(" ")
+                    moment_array[:, l, m, n] = direction
+                else:
+                    moment_array[:, l, m, n] = [0, 0, 0]
+    numpy.save(path + filename, moment_array)
+else:
+    for n in range(0, M):
+        for m in range(0, M):
+            for l in range(0, M):
+
+                voxel = mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5))
+                if point_inside_mesh(voxel, mask):
+                    closestVec = veclist[0]
+                    distanceToPrevious = numpy.sqrt(
+                        (veclist[0].location[0] - voxel[0]) * (veclist[0].location[0] - voxel[0]) + (
+                            veclist[0].location[1] - voxel[1]) * (veclist[0].location[1] - voxel[1]) + (
+                            veclist[0].location[2] - voxel[2]) * (veclist[0].location[2] - voxel[2]))
+
+                    for i in range(1, len(veclist)):
+                        distanceSq = (veclist[i].location[0] - voxel[0]) * (veclist[i].location[0] - voxel[0]) \
+                                     + (veclist[i].location[1] - voxel[1]) * (veclist[i].location[1] - voxel[1]) \
+                                     + (veclist[i].location[2] - voxel[2]) * (veclist[i].location[2] - voxel[2])
+                        distance = numpy.sqrt(distanceSq)
+                        if distance < distanceToPrevious:
+                            closestVec = veclist[i]
+                        distanceToPrevious = distance
+
+                    rot = closestVec.rotation_euler
+                    rotMat = mathutils.Euler(rot).to_matrix()
+                    direction = rotMat * mathutils.Vector((0, 0, 1))
+
+                    fox.write(str(direction[0]))
+                    foy.write(str(direction[1]))
+                    foz.write(str(direction[2]))
+                else:
+                    fox.write("0")
+                    foy.write("0")
+                    foz.write("0")
+                if l < M - 1:
+                    fox.write(" ")
+                    foy.write(" ")
+                    foz.write(" ")
+            fox.write("\n")
+            foy.write("\n")
+            foz.write("\n")
         fox.write("\n")
         foy.write("\n")
         foz.write("\n")
-    fox.write("\n")
-    foy.write("\n")
-    foz.write("\n")
-fox.close()
-foy.close()
-foz.close()
+    fox.close()
+    foy.close()
+    foz.close()
+
+
+
+
+
 
 
 
