@@ -59,8 +59,6 @@ def objectMask(ob, path, numpy_output, M):
                     if point_inside_mesh(mathutils.Vector(((l + 1) / M - 0.5, (m + 1) / M - 0.5, (n + 1) / M - 0.5)),
                                          ob):
                         mask[l, m, n] = True
-                    else:
-                        mask[l, m, n] = False
         numpy.save(fileOut, mask)
         return
     else:
