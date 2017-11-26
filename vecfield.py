@@ -90,7 +90,7 @@ mask = bpy.data.objects['Cube.002']
 objectMask(mask, path, numpy_output, M=M)
 
 if numpy_output:
-    moment_array = numpy.zeros((3, M, M, M))
+    moment_array = numpy.zeros((M, M, M, 3))
 else:
     fox = open(path + filename + "_x", "w")
     foy = open(path + filename + "_y", "w")
@@ -124,9 +124,7 @@ if numpy_output:
                     rotMat = mathutils.Euler(rot).to_matrix()
                     direction = rotMat * mathutils.Vector((0, 0, 1))
 
-                    moment_array[:, l, m, n] = direction
-                else:
-                    moment_array[:, l, m, n] = [0, 0, 0]
+                    moment_array[l, m, n, :] = direction
     numpy.save(path + filename, moment_array)
 else:
     for n in range(0, M):
