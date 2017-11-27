@@ -26,49 +26,27 @@ def point_inside_mesh(point, ob):
     # erroneously counted as being interior. This can occur due to
     # numerical errors under some (rare) circumstances.
 
-    axes = [mathutils.Vector((1, 0, 0))]
-    outside1 = False
+    axes = [mathutils.Vector((1, 0, 0)), mathutils.Vector((0, 1, 0))]
+    outside = False
     for axis in axes:
 
         mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
+        mat1.invert()
         orig = mat1 * point
 
         count = 0
         while True:
             result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1: break
+            if index == -1:
+                break
             count += 1
 
             orig = location + axis * 0.00001
 
         if (count % 2 == 0):
-            outside1 = True
+            outside = True
             break
 
-    axes = [mathutils.Vector((0, 1, 0))]
-    outside2 = False
-    for axis in axes:
-
-        mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
-        orig = mat1 * point
-
-        count = 0
-        while True:
-            result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
-            if index == -1: break
-            count += 1
-
-            orig = location + axis * 0.00001
-
-        if (count % 2 == 0):
-            outside2 = True
-            break
-
-    outside = outside1 or outside2
     return not outside
 
 

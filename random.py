@@ -20,7 +20,6 @@ def point_inside_mesh(point, ob):
         Mesh must have a well defined interior/exterior for
         predictable results. Typically, being closed would be
         sufficient.
-
     Returns
     -------
     bool
@@ -37,8 +36,7 @@ def point_inside_mesh(point, ob):
     for axis in axes:
 
         mat1 = mathutils.Matrix(ob.matrix_world)
-        mat = mat1.invert()
-
+        mat1.invert()
         orig = mat1 * point
 
         count = 0

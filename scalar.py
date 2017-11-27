@@ -30,14 +30,16 @@ def point_inside_mesh(point, ob):
     for axis in axes:
 
         mat1 = mathutils.Matrix(ob.matrix_world)
+        mat1.invert()
         orig = mat1 * point
-        count = 0
 
+        count = 0
         while True:
             result, location, normal, index = ob.ray_cast(orig, axis * 10000.0)
             if index == -1:
                 break
             count += 1
+
             orig = location + axis * 0.00001
 
         if (count % 2 == 0):
