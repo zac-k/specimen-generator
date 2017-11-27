@@ -6,11 +6,11 @@ domain = (150e-9, 150e-9, 150e-9)
 # Import the specimens
 film = Specimen(width=domain,
                 mean_inner_potential=-9.09 + 0.5j,
-                specimen_file='film.txt',
+                specimen_file='film.npy',
                 name='Carbon Film')
 particle = Specimen(width=domain,
                     mean_inner_potential=-17 + 1j,
-                    specimen_file='particle.txt',
+                    specimen_file='particle.npy',
                     name='Particle')
 
 # Get resolution from particle
